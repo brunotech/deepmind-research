@@ -93,10 +93,10 @@ class ParamGenerator:
     # Do not allow Signeo variation as this does not work with OhmTor current
     # diffusion.
     no_scaling = (1, 1)
-    self._rp_bounds = rp_bounds if rp_bounds else no_scaling
-    self._lp_bounds = lp_bounds if lp_bounds else no_scaling
-    self._bp_bounds = bp_bounds if bp_bounds else no_scaling
-    self._qA_bounds = qA_bounds if qA_bounds else no_scaling
+    self._rp_bounds = rp_bounds or no_scaling
+    self._lp_bounds = lp_bounds or no_scaling
+    self._bp_bounds = bp_bounds or no_scaling
+    self._qA_bounds = qA_bounds or no_scaling
     self._rp_mean = rp_mean
     self._lp_mean = lp_mean
     self._bp_mean = bp_mean

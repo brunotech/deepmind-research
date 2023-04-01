@@ -80,15 +80,12 @@ def load_cifar10(batch_sizes: Sequence[int],
                  drop_remainder: bool = True,
                  repeat: int = 1) -> tf.data.Dataset:
   """Loads CIFAR-10."""
-  if subset == 'train':
-    ds = tfds.load(name='cifar10', split=tfds.Split.TRAIN)
-    # In Gowal et al. (https://arxiv.org/abs/2010.03593) and Rebuffi et al.
-    # (https://arxiv.org/abs/2103.01946), we also keep a separate validation
-    # subset for early stopping and would run: ds = ds.skip(1_024).
-  elif subset == 'test':
+  if subset == 'test':
     ds = tfds.load(name='cifar10', split=tfds.Split.TEST)
+  elif subset == 'train':
+    ds = tfds.load(name='cifar10', split=tfds.Split.TRAIN)
   else:
-    raise ValueError('Unknown subset: "{}"'.format(subset))
+    raise ValueError(f'Unknown subset: "{subset}"')
 
   ds = ds.cache()
   if is_training:

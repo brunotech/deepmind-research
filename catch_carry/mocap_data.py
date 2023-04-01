@@ -119,7 +119,7 @@ def _assert_partitions_all_clips(*args):
       assert sets[i] & sets[j] == set()
 
 
-_FLOOR_LEVEL = tuple(range(0, 16))
+_FLOOR_LEVEL = tuple(range(16))
 _MEDIUM_PEDESTAL = tuple(range(16, 32))
 _HIGH_PEDESTAL = tuple(range(32, 48))
 _assert_partitions_all_clips(_FLOOR_LEVEL, _MEDIUM_PEDESTAL, _HIGH_PEDESTAL)

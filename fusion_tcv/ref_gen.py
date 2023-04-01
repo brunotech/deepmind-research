@@ -139,12 +139,13 @@ class PresetShapePointsReferenceGenerator(FixedReferenceGenerator):
     if targets[0].timing.transition_steps != 0:
       raise ValueError("Invalid first timing, transition must be 0, not "
                        f"{targets[0].timing.transition_steps}")
-    transitions = []
-    for target in targets:
-      transitions.append(LinearTransition(
-          steady_steps=target.timing.steady_steps,
-          transition_steps=target.timing.transition_steps,
-          reference=target.shape.canonical().gen_references()))
+    transitions = [
+        LinearTransition(
+            steady_steps=target.timing.steady_steps,
+            transition_steps=target.timing.transition_steps,
+            reference=target.shape.canonical().gen_references(),
+        ) for target in targets
+    ]
     super().__init__(transitions, start_offset=start_offset)
 
 

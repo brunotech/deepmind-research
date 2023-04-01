@@ -24,7 +24,7 @@ class SkyBox(composer.Entity):
 
   def _build(self, style):
     labmaze_textures = labmaze_assets.get_sky_texture_paths(style)
-    self._mjcf_root = mjcf.RootElement(model='dmlab_' + style)
+    self._mjcf_root = mjcf.RootElement(model=f'dmlab_{style}')
     self._texture = self._mjcf_root.asset.add(
         'texture', type='skybox', name='texture',
         fileleft=labmaze_textures.left, fileright=labmaze_textures.right,
@@ -45,12 +45,15 @@ class WallTextures(composer.Entity):
 
   def _build(self, style):
     labmaze_textures = labmaze_assets.get_wall_texture_paths(style)
-    self._mjcf_root = mjcf.RootElement(model='dmlab_' + style)
+    self._mjcf_root = mjcf.RootElement(model=f'dmlab_{style}')
     self._textures = []
-    for texture_name, texture_path in labmaze_textures.items():
-      self._textures.append(self._mjcf_root.asset.add(
-          'texture', type='2d', name=texture_name,
-          file=texture_path.format(texture_name)))
+    self._textures.extend(
+        self._mjcf_root.asset.add(
+            'texture',
+            type='2d',
+            name=texture_name,
+            file=texture_path.format(texture_name),
+        ) for texture_name, texture_path in labmaze_textures.items())
 
   @property
   def mjcf_model(self):
@@ -66,12 +69,15 @@ class FloorTextures(composer.Entity):
 
   def _build(self, style):
     labmaze_textures = labmaze_assets.get_floor_texture_paths(style)
-    self._mjcf_root = mjcf.RootElement(model='dmlab_' + style)
+    self._mjcf_root = mjcf.RootElement(model=f'dmlab_{style}')
     self._textures = []
-    for texture_name, texture_path in labmaze_textures.items():
-      self._textures.append(self._mjcf_root.asset.add(
-          'texture', type='2d', name=texture_name,
-          file=texture_path.format(texture_name)))
+    self._textures.extend(
+        self._mjcf_root.asset.add(
+            'texture',
+            type='2d',
+            name=texture_name,
+            file=texture_path.format(texture_name),
+        ) for texture_name, texture_path in labmaze_textures.items())
 
   @property
   def mjcf_model(self):

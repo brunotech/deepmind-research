@@ -306,6 +306,5 @@ def scalar_log_prob(distribution, val):
   if len(log_prob_val.shape) == 1:
     return log_prob_val
   elif len(log_prob_val.shape) > 2:
-    raise ValueError('log_prob_val has unexpected shape {}.'.format(
-        log_prob_val.shape))
+    raise ValueError(f'log_prob_val has unexpected shape {log_prob_val.shape}.')
   return jnp.sum(log_prob_val, axis=1)

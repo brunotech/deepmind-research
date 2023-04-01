@@ -557,7 +557,7 @@ class XPointCount(AbstractTarget):
     else:
       target_points = shape.points_from_references(
           references, "x_points", tcv_common.REF_RANGES.count("x_points_r"))
-      target = sum(1 for p in target_points if p.r != 0)
+      target = sum(p.r != 0 for p in target_points)
     return [Target(len(state.x_points), target)]
 
 
@@ -619,4 +619,4 @@ class LimitPoint(AbstractPointsTarget):
     is_diverted = state.is_diverted_d[0]
     if diverted_target == shape.Diverted.DIVERTED:
       return [Target((dist if is_diverted else self.max_dist), 0)]
-    return [Target((dist if not is_diverted else self.max_dist), 0)]
+    return [Target(self.max_dist if is_diverted else dist, 0)]

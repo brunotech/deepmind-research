@@ -168,11 +168,14 @@ class Reward(AbstractReward):
       values.extend(transformed)
       for weight, value in zip(component_weights, transformed):
         measure = [m for m in measure if not np.isnan(m)] or [float("nan")]
-        reward_dict[name].append(RewardDetails(
-            value, weight * value * self._reward_scale,
-            weight if not np.isnan(value) else 0,
-            MeasureDetails(
-                min(measure), sum(measure) / len(measure), max(measure))))
+        reward_dict[name].append(
+            RewardDetails(
+                value,
+                weight * value * self._reward_scale,
+                0 if np.isnan(value) else weight,
+                MeasureDetails(min(measure),
+                               sum(measure) / len(measure), max(measure)),
+            ))
 
     sum_weights = sum(sum(d.weight for d in detail)
                       for detail in reward_dict.values())

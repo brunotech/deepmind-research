@@ -61,9 +61,7 @@ def sinusoid_position_encoding(
   inv_freq = max_timescale**(-freqs / hidden_size)
   pos_seq = np.arange(sequence_length - 1, -1, -1.0)
   sinusoid_inp = np.einsum("i,j->ij", pos_seq, inv_freq)
-  pos_emb = np.concatenate(
-      [np.sin(sinusoid_inp), np.cos(sinusoid_inp)], axis=-1)
-  return pos_emb
+  return np.concatenate([np.sin(sinusoid_inp), np.cos(sinusoid_inp)], axis=-1)
 
 
 class HierarchicalMemoryAttention(hk.Module):
@@ -110,8 +108,7 @@ class HierarchicalMemoryAttention(hk.Module):
         with_bias=False,
         w_init=hk.initializers.VarianceScaling(scale=self._init_scale),
         name=name)
-    out = linear(inputs)
-    return out
+    return linear(inputs)
 
   def __call__(
       self,

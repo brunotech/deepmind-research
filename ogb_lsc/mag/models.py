@@ -60,7 +60,8 @@ def build_update_fn(
           axis=-1,
           create_scale=True,
           create_offset=True,
-          name=name + '_layer_norm')
+          name=f'{name}_layer_norm',
+      )
     elif normalization_type == 'batch_norm':
       batch_norm = hk.BatchNorm(
           create_scale=True,
@@ -107,13 +108,11 @@ def build_gn(
 
   def maybe_dropedge(x):
     """Dropout on edge messages."""
-    if not is_training:
-      return x
-    return x * hk.dropout(
+    return (x * hk.dropout(
         hk.next_rng_key(),
         dropedge_rate,
         jnp.ones([x.shape[0], 1]),
-    )
+    ) if is_training else x)
 
   dropped_edge_update_fn = lambda *args: maybe_dropedge(edge_update_fn(*args))
   return jraph.InteractionNetwork(

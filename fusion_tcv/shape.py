@@ -180,10 +180,7 @@ def spline_interpolate_points(
   if x_points:
     # Find the shape points that must allow sharp corners.
     for xp in x_points:
-      for i, p in enumerate(points):
-        if np.hypot(*(p - xp)) < 0.01:
-          ends.append(i)
-
+      ends.extend(i for i, p in enumerate(points) if np.hypot(*(p - xp)) < 0.01)
   if not ends:
     # No x-points forcing sharp corners, so use a periodic spline.
     tck, _ = interpolate.splprep(np.array(points + [points[0]]).T, s=0, per=1)
@@ -263,7 +260,7 @@ class ParametrizedShape:
 
 def trim_zero_points(points: ShapePoints) -> Optional[ShapePoints]:
   trimmed = [p for p in points if p.r != 0]
-  return trimmed if trimmed else None
+  return trimmed or None
 
 
 class Diverted(enum.Enum):
@@ -276,13 +273,12 @@ class Diverted(enum.Enum):
   def from_refs(cls, references: named_array.NamedArray) -> "Diverted":
     diverted = (references["diverted", 0] == 1)
     limited = (references["limited", 0] == 1)
-    if diverted and limited:
-      raise ValueError("Diverted and limited doesn't make sense.")
     if diverted:
-      return cls.DIVERTED
-    if limited:
-      return cls.LIMITED
-    return cls.ANY
+      if limited:
+        raise ValueError("Diverted and limited doesn't make sense.")
+      else:
+        return cls.DIVERTED
+    return cls.LIMITED if limited else cls.ANY
 
 
 @dataclasses.dataclass
@@ -319,10 +315,11 @@ class Shape:
         x_points=trim_zero_points(points_from_references(references,
                                                          "x_points")),
         legs=trim_zero_points(points_from_references(references, "legs")),
-        limit_point=trim_zero_points(points_from_references(
-            references, "limit_point")[0:1]),
+        limit_point=trim_zero_points(
+            points_from_references(references, "limit_point")[:1]),
         diverted=Diverted.from_refs(references),
-        ip=float(ip) if ip != 0 else None)
+        ip=float(ip) if ip != 0 else None,
+    )
 
   def gen_references(self) -> named_array.NamedArray:
     """Return the references for the parametrized shape."""

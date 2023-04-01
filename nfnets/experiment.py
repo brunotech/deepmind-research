@@ -194,7 +194,7 @@ class Experiment(experiment.AbstractExperiment):
     lr_sched_fn = getattr(optim, self.config.lr_schedule.name)
     lr_schedule = lr_sched_fn(max_val=max_lr, **self.config.lr_schedule.kwargs)
     # Optimizer; no need to broadcast!
-    opt_kwargs = {key: val for key, val in self.config.optimizer.kwargs.items()}
+    opt_kwargs = dict(self.config.optimizer.kwargs.items())
     opt_kwargs['lr'] = lr_schedule
     opt_module = getattr(optim, self.config.optimizer.name)
     self.opt = opt_module([{
@@ -224,8 +224,7 @@ class Experiment(experiment.AbstractExperiment):
 
   def _one_hot(self, value):
     """One-hot encoding potentially over a sequence of labels."""
-    y = jax.nn.one_hot(value, self.config.num_classes)
-    return y
+    return jax.nn.one_hot(value, self.config.num_classes)
 
   def _loss_fn(self, params, state, inputs, rng):
     logits, state = self.net.apply(params, state, rng, inputs, is_training=True)

@@ -105,7 +105,7 @@ def _generate_template(object_name):
   elif object_type == "inverse_ex":
     for i in range(UPSAMPLE_SIZE):
       for j in range(UPSAMPLE_SIZE):
-        if not (abs(i - j) <= 1 or abs(UPSAMPLE_SIZE - 1 - j - i) <= 1):
+        if abs(i - j) > 1 and abs(UPSAMPLE_SIZE - 1 - j - i) > 1:
           template[i, j] = 1.
   elif object_type == "circle":
     for i in range(UPSAMPLE_SIZE):
@@ -142,10 +142,10 @@ def _generate_template(object_name):
     for i in range(half + UPSAMPLE_SIZE % 2):
       template[2*i, :] = 1.
   else:
-    raise ValueError("Unknown object: {}".format(object_type))
+    raise ValueError(f"Unknown object: {object_type}")
 
   if object_color not in COLORS:
-    raise ValueError("Unknown color: {}".format(object_color))
+    raise ValueError(f"Unknown color: {object_color}")
 
   template = np.tensordot(template, COLORS[object_color], axes=0)
 
@@ -220,10 +220,7 @@ class BalletEnvironment(dm_env.Environment):
     self._rng.shuffle(shapes)
     dancers_and_properties = []
     for dancer_i in range(self._num_dancers):
-      if dancer_i == target_dancer_index:
-        value = 1.
-      else:
-        value = 0.
+      value = 1. if dancer_i == target_dancer_index else 0.
       dancers_and_properties.append(
           (ballet_core.POSSIBLE_DANCER_CHARS[dancer_i],
            positions[dancer_i],
@@ -255,8 +252,7 @@ class BalletEnvironment(dm_env.Environment):
                   this_char]
     image /= 255.
     language = np.array(self._current_game.the_plot["instruction_string"])
-    full_observation = (image, language)
-    return full_observation
+    return image, language
 
   def reset(self):
     """Start a new episode."""
@@ -266,7 +262,7 @@ class BalletEnvironment(dm_env.Environment):
     self._char_to_template = {
         k: _generate_template(v) for k, v in self._current_game.the_plot[
             "char_to_color_shape"]}
-    self._char_to_template.update(_CHAR_TO_TEMPLATE_BASE)
+    self._char_to_template |= _CHAR_TO_TEMPLATE_BASE
     self._cropper.set_engine(self._current_game)
     self._state = dm_env.StepType.FIRST
     # let's go!
@@ -294,11 +290,7 @@ class BalletEnvironment(dm_env.Environment):
     observation = self._render_observation(observation)
 
     # Check the current status of the game.
-    if self._game_over:
-      self._state = dm_env.StepType.LAST
-    else:
-      self._state = dm_env.StepType.MID
-
+    self._state = dm_env.StepType.LAST if self._game_over else dm_env.StepType.MID
     return dm_env.TimeStep(
         step_type=self._state,
         reward=reward,

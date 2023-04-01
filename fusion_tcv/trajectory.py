@@ -36,5 +36,4 @@ class Trajectory:
     for i, ts in enumerate(series):
       for k, v in values.items():
         v[..., i] = getattr(ts, k)
-    out = cls(**values)
-    return out
+    return cls(**values)

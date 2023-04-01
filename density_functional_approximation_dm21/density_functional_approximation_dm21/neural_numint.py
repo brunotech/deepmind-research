@@ -147,9 +147,7 @@ class _SystemState:
 def _get_number_of_density_matrices(dms):
   """Returns the number of density matrices in dms."""
   # See pyscf.numint.NumInt._gen_rho_evaluator
-  if isinstance(dms, np.ndarray) and dms.ndim == 2:
-    return 1
-  return len(dms)
+  return 1 if isinstance(dms, np.ndarray) and dms.ndim == 2 else len(dms)
 
 
 class NeuralNumInt(numint.NumInt):

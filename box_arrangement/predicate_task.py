@@ -106,10 +106,9 @@ class PredicateTask(composer.Task):
         `num_predicates` is greater than `num_targets`.
     """
     if max_num_predicates > len(predicates):
-      raise ValueError('Not enough predicates for task. The maximum number of '
-                       'predicates can be '
-                       '{} but only {} predicates provided.'.format(
-                           max_num_predicates, len(predicates)))
+      raise ValueError(
+          f'Not enough predicates for task. The maximum number of predicates can be {max_num_predicates} but only {len(predicates)} predicates provided.'
+      )
     self._arena = maze_arena
     self._walker = walker
     self._reward_scale = reward_scale
@@ -239,17 +238,13 @@ class PredicateTask(composer.Task):
     if len(self._props) + len(self._targets) > len(
         self._arena.target_positions):
       raise RuntimeError(
-          'The generated maze does not contain enough target positions '
-          'for the requested number of props ({}) and targets ({}): got {}.'
-          .format(
-              len(self._props), len(self._targets),
-              len(self._arena.target_positions)))
+          f'The generated maze does not contain enough target positions for the requested number of props ({len(self._props)}) and targets ({len(self._targets)}): got {len(self._arena.target_positions)}.'
+      )
 
     self._prop_positions = []
-    for i in range(len(self._props)):
-      self._prop_positions.append(
-          self._arena.target_positions[target_permutation[i]])
-
+    self._prop_positions.extend(
+        self._arena.target_positions[target_permutation[i]]
+        for i in range(len(self._props)))
     self._target_positions = []
     for i in range(len(self._targets)):
       idx = i + len(self._props)
@@ -283,8 +278,8 @@ class PredicateTask(composer.Task):
 
     if not valid_set_found:
       raise ValueError(
-          'Could not find set of active predicates with '
-          'unique objects are after {} iterations.'.format(_MAX_ITERATIONS))
+          f'Could not find set of active predicates with unique objects are after {_MAX_ITERATIONS} iterations.'
+      )
     for predicate in self._active_predicates:
       predicate.activate_predicate()
 
@@ -430,9 +425,7 @@ class PredicateTask(composer.Task):
             self._walker.aliveness(physics) < self._alive_threshold)
 
   def get_discount(self, physics):
-    if self.should_terminate_episode(physics):
-      return 0.0
-    return 1.0
+    return 0.0 if self.should_terminate_episode(physics) else 1.0
 
   def get_reward_spec(self):
     return specs.Array(shape=[], dtype=np.float32)

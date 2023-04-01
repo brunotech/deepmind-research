@@ -97,7 +97,7 @@ def train(
         next(rng_seq), next(train_data_iterator).data)
     opt_state = opt_init(params)
 
-  for step in range(start, iterations, 1):
+  for step in range(start, iterations):
     if step % test_every == 0:
       test_loss, ll, kl = loss_test(params, next(rng_seq),
                                     next(test_data_iterator).data)

@@ -128,7 +128,7 @@ class MoveWalkerToTarget(BasePredicate):
 
   @property
   def objects_in_use(self):
-    return set([self._walker, self._target])
+    return {self._walker, self._target}
 
   @property
   def observation_value(self):
@@ -169,7 +169,7 @@ class MoveWalkerToRandomTarget(BasePredicate):
 
   @property
   def objects_in_use(self):
-    return set([self._walker, self._target_to_move_to])
+    return {self._walker, self._target_to_move_to}
 
   @property
   def observation_value(self):
@@ -213,7 +213,7 @@ class MoveWalkerToBox(BasePredicate):
 
   @property
   def objects_in_use(self):
-    return set([self._walker, self._box])
+    return {self._walker, self._box}
 
   @property
   def observation_value(self):
@@ -236,7 +236,7 @@ class MoveWalkerToBox(BasePredicate):
         physics.bind(geom).element_id for geom in self._walker_geoms
     ]
     for contact in physics.data.contact:
-      contact_geoms = set([contact.geom1, contact.geom2])
+      contact_geoms = {contact.geom1, contact.geom2}
       if (physics.bind(self._box.geom).element_id in contact_geoms and
           contact_geoms.intersection(walker_geom_ids)):
         return True
@@ -285,7 +285,7 @@ class MoveBoxToBox(BasePredicate):
 
   @property
   def objects_in_use(self):
-    return set([self._first_box, self._second_box])
+    return {self._first_box, self._second_box}
 
   @property
   def observation_value(self):
@@ -306,7 +306,7 @@ class MoveBoxToBox(BasePredicate):
 
   def _are_boxes_in_contact(self, physics):
     for contact in physics.data.contact:
-      contact_geoms = set([contact.geom1, contact.geom2])
+      contact_geoms = {contact.geom1, contact.geom2}
       if (physics.bind(self._first_box.geom).element_id in contact_geoms and
           physics.bind(self._second_box.geom).element_id in contact_geoms):
         return True
@@ -355,7 +355,7 @@ class MoveBoxToTarget(BasePredicate):
 
   @property
   def objects_in_use(self):
-    return set([self._box, self._target])
+    return {self._box, self._target}
 
   @property
   def observation_value(self):
@@ -412,7 +412,7 @@ class MoveBoxToRandomTarget(BasePredicate):
 
   @property
   def objects_in_use(self):
-    return set([self._box_to_move, self._target_to_move_to])
+    return {self._box_to_move, self._target_to_move_to}
 
   @property
   def observation_value(self):

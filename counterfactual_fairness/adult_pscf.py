@@ -404,10 +404,8 @@ def _evaluate(
     num_prediction_samples: int,
 ):
   """Perform evaluation of fair inference."""
-  output = fair_inference_fn(params, rng, inputs,
-                             batch_size, num_prediction_samples)
-
-  return output
+  return fair_inference_fn(params, rng, inputs, batch_size,
+                           num_prediction_samples)
 
 
 def _loss_klqp(outputs: CausalNetOutput, beta: float) -> jnp.ndarray:
@@ -454,13 +452,12 @@ class Updater:
     """Initializes state of the updater."""
     params = self._net_init(init_rng, data)
     opt_state = self._opt.init(params)
-    out = dict(
+    return dict(
         step=np.array(0),
         rng=init_rng,
         opt_state=opt_state,
         params=params,
     )
-    return out
 
   @functools.partial(jax.jit, static_argnums=0)
   def update(self, state: Mapping[str, Any], data: jnp.ndarray):

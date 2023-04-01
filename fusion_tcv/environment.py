@@ -138,8 +138,7 @@ class Environment(auto_reset_environment.AutoResetEnvironment):
     references = self._reference_generator.step()
     self._last_observation = self._extract_observation(
         state, references, action)
-    term = self._termination.terminate(state)
-    if term:
+    if term := self._termination.terminate(state):
       return dm_env.termination(
           self._reward.terminal_reward(), self._last_observation)
     reward, _ = self._reward.reward(voltages, state, references)

@@ -353,7 +353,7 @@ class Experiment(experiment.AbstractExperiment):
       avg_scalars = self.eval_epoch(self._avg_params or self._params,
                                     self._state, rng)
       for k, v in avg_scalars.items():
-        scalars[k + '_swa'] = v
+        scalars[f'{k}_swa'] = v
     return scalars
 
   def eval_epoch(self, params, state, rng):
@@ -374,8 +374,7 @@ class Experiment(experiment.AbstractExperiment):
         summed_scalars = scalars
       else:
         summed_scalars = jax.tree_map(jnp.add, summed_scalars, scalars)
-    mean_scalars = jax.tree_map(lambda x: x / num_samples, summed_scalars)
-    return mean_scalars
+    return jax.tree_map(lambda x: x / num_samples, summed_scalars)
 
   def _eval_fn(self, params, state, inputs, rng):
     images = inputs['image']
@@ -446,10 +445,7 @@ class Experiment(experiment.AbstractExperiment):
       init_rng = jl_utils.bcast_local_devices(rng)
       self._params, self._state = init_net(init_rng, images)
       # Setup weight averaging.
-      if self.config.training.swa_decay > 0:
-        self._avg_params = self._params
-      else:
-        self._avg_params = None
+      self._avg_params = self._params if self.config.training.swa_decay > 0 else None
       # Initialize optimizer state.
       init_opt = jax.pmap(self.optimizer.init, axis_name='i')
       self._opt_state = init_opt(self._params)
@@ -577,5 +573,5 @@ def _merge_eval_scalars(a, b):
   if b is None:
     return a
   for k, v in b.items():
-    a['eval_' + k] = v
+    a[f'eval_{k}'] = v
   return a

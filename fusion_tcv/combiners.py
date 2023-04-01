@@ -66,9 +66,8 @@ class Mean(AbstractCombiner):
   def __call__(self, values: List[float],
                weights: Optional[List[float]] = None) -> List[float]:
     values, weights = self._clean_values_weights(values, weights)
-    if not values:
-      return [float("nan")]
-    return [sum(r * w for r, w in zip(values, weights)) / sum(weights)]
+    return ([sum(r * w for r, w in zip(values, weights)) /
+             sum(weights)] if values else [float("nan")])
 
 
 def _multiply(values, weights, mean):
@@ -87,7 +86,7 @@ def _multiply(values, weights, mean):
   """
   # If weight and value are both zero, set the value to 1 so that 0^0 = 1.
   values = [1 if (v == 0 and w == 0) else v for (v, w) in zip(values, weights)]
-  if any(v == 0 for v in values):
+  if 0 in values:
     return [0]
   den = sum(weights) if mean else 1
   return [math.exp(sum(np.log(values) * weights) / den)]
@@ -108,9 +107,7 @@ class Multiply(AbstractCombiner):
   def __call__(self, values: List[float],
                weights: Optional[List[float]] = None) -> List[float]:
     values, weights = self._clean_values_weights(values, weights)
-    if not values:
-      return [float("nan")]
-    return _multiply(values, weights, mean=False)
+    return _multiply(values, weights, mean=False) if values else [float("nan")]
 
 
 class GeometricMean(AbstractCombiner):
@@ -125,9 +122,7 @@ class GeometricMean(AbstractCombiner):
   def __call__(self, values: List[float],
                weights: Optional[List[float]] = None) -> List[float]:
     values, weights = self._clean_values_weights(values, weights)
-    if not values:
-      return [float("nan")]
-    return _multiply(values, weights, mean=True)
+    return _multiply(values, weights, mean=True) if values else [float("nan")]
 
 
 class Min(AbstractCombiner):
@@ -136,9 +131,7 @@ class Min(AbstractCombiner):
   def __call__(self, values: List[float],
                weights: Optional[List[float]] = None) -> List[float]:
     values, _ = self._clean_values_weights(values, weights)
-    if not values:
-      return [float("nan")]
-    return [min(values)]
+    return [min(values)] if values else [float("nan")]
 
 
 class Max(AbstractCombiner):
@@ -147,9 +140,7 @@ class Max(AbstractCombiner):
   def __call__(self, values: List[float],
                weights: Optional[List[float]] = None) -> List[float]:
     values, _ = self._clean_values_weights(values, weights)
-    if not values:
-      return [float("nan")]
-    return [max(values)]
+    return [max(values)] if values else [float("nan")]
 
 
 @dataclasses.dataclass(frozen=True)

@@ -33,7 +33,7 @@ class BalletEnvironmentTest(parameterized.TestCase):
     level_size = ballet_environment_core.ROOM_SIZE
     upsample_size = ballet_environment.UPSAMPLE_SIZE
     # wait for dance to complete
-    for i in range(30):
+    for _ in range(30):
       result = env.step(0).observation
       self.assertEqual(result[0].shape,
                        (level_size[0] * upsample_size,

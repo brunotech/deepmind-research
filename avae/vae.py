@@ -128,6 +128,5 @@ class VAE:
     """
     posterior = self._encoder(input_data)
     samples = self._encoder.sample(posterior, key)
-    recons = self._decoder(samples)
-    return recons
+    return self._decoder(samples)
 

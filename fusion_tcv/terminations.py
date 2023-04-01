@@ -74,11 +74,9 @@ class IPTooLow(Abstract):
     if len(ip_d) == 1:
       if ip_d[0] > self._singlet_threshold:  # Sign due to negative Ip.
         return f"IPTooLow: Singlet, {ip_d[0]:.0f}"
-      return None
-    else:
-      if max(ip_d) > self._droplet_threshold:  # Sign due to negative Ip.
-        return f"IPTooLow: Components: {ip_d[0]:.0f}, {ip_d[1]:.0f}"
-      return None
+    elif max(ip_d) > self._droplet_threshold:  # Sign due to negative Ip.
+      return f"IPTooLow: Components: {ip_d[0]:.0f}, {ip_d[1]:.0f}"
+    return None
 
 
 class AnyTermination(Abstract):
@@ -89,8 +87,7 @@ class AnyTermination(Abstract):
 
   def terminate(self, state: fge_state.FGEState) -> Optional[str]:
     for terminator in self._terminators:
-      term = terminator.terminate(state)
-      if term:
+      if term := terminator.terminate(state):
         return term
     return None
 

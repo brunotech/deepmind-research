@@ -42,11 +42,7 @@ class FileExporter(object):
   def _reshape(self, data):
     """Reshape given data into image format."""
     batch_size, height, width, n_channels = data.shape
-    if self._grid_height:
-      grid_height = self._grid_height
-    else:
-      grid_height = int(math.floor(math.sqrt(batch_size)))
-
+    grid_height = self._grid_height or int(math.floor(math.sqrt(batch_size)))
     grid_width = int(math.ceil(batch_size/grid_height))
 
     if n_channels == 1:
@@ -54,8 +50,8 @@ class FileExporter(object):
       n_channels = 3
 
     if n_channels != 3:
-      raise ValueError('Image batch must have either 1 or 3 channels, but '
-                       'was {}'.format(n_channels))
+      raise ValueError(
+          f'Image batch must have either 1 or 3 channels, but was {n_channels}')
 
     shape = (height * grid_height, width * grid_width, n_channels)
     buf = np.full(shape, 255, dtype=np.uint8)
@@ -75,7 +71,7 @@ class FileExporter(object):
 
   def save(self, data, name):
     data = self._reshape(data)
-    relative_name = '{}_last.png'.format(name)
+    relative_name = f'{name}_last.png'
     target_file = os.path.join(self._path, relative_name)
 
     img = Image.fromarray(data)

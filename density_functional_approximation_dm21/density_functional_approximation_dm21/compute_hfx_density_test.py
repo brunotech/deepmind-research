@@ -195,7 +195,7 @@ class NuTest(parameterized.TestCase):
     if num_grids == -1:
       test_coords = mf.grids.coords
     else:
-      test_coords = mf.grids.coords[0:num_grids]
+      test_coords = mf.grids.coords[:num_grids]
     nu_slow = compute_hfx_density._evaluate_nu_slow(
         mol, test_coords, omega=0.0, hermi=hermi)
     nu_fast = compute_hfx_density._evaluate_nu(

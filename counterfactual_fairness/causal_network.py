@@ -75,7 +75,7 @@ class Node:
     self._distribution = None
 
   def __repr__(self):
-    return 'Node<{}>'.format(self.name)
+    return f'Node<{self.name}>'
 
   @property
   def dim(self):
@@ -167,7 +167,6 @@ class Node:
         node is not hidden.
     """
     column = self._column
-    hidden = self._hidden
     replacement = None
     if node_to_replacement is not None and self in node_to_replacement:
       replacement = node_to_replacement[self]
@@ -179,10 +178,11 @@ class Node:
       return
 
     if self._index < 0:
+      hidden = self._hidden
       if not hidden:
         raise RuntimeError(
-            'Node {} is not hidden, and column {} is not in the frame.'.format(
-                self, column))
+            f'Node {self} is not hidden, and column {column} is not in the frame.'
+        )
       # Nothing to do - there is no data, and the node is hidden.
       return
 
@@ -377,7 +377,7 @@ class MLPMultinomial(DistributionModule):
     # Helper method that uses the dataframe to work out how many categories
     # are in the given column. The dataframe is not used for any other purpose.
     if not isinstance(data[column].dtype, pd.api.types.CategoricalDtype):
-      raise ValueError('{} is not categorical.'.format(column))
+      raise ValueError(f'{column} is not categorical.')
     index = list(data.columns).index(column)
     num_categories = len(data[column].cat.categories)
     return cls(column, index, num_categories, hidden_shape)

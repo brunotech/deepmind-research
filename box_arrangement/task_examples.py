@@ -50,32 +50,29 @@ def _make_predicate_task(n_boxes, n_targets,
       wall_textures=wall,
       floor_textures=floor)
 
-  boxes = []
-  for _ in range(n_boxes):
-    boxes.append(
-        manipulation_props.BoxWithSites(mass=1.5, half_lengths=[0.5, 0.5, 0.5]))
-
-  targets = []
-  for _ in range(n_targets):
-    targets.append(
-        props.PositionDetector(
-            pos=[0, 0, 0.5], size=[0.5, 0.5, 0.5], inverted=False,
-            visible=True))
-
+  boxes = [
+      manipulation_props.BoxWithSites(mass=1.5, half_lengths=[0.5, 0.5, 0.5])
+      for _ in range(n_boxes)
+  ]
+  targets = [
+      props.PositionDetector(pos=[0, 0, 0.5],
+                             size=[0.5, 0.5, 0.5],
+                             inverted=False,
+                             visible=True) for _ in range(n_targets)
+  ]
   predicates = []
   if include_gtt_predicates:
     predicates.append(
         predicates_module.MoveWalkerToRandomTarget(
             walker=walker, targets=targets))
   if include_move_box_predicates:
-    for box_idx in range(len(boxes)):
-      predicates.append(
-          predicates_module.MoveBoxToRandomTarget(
-              walker=walker,
-              box=boxes[box_idx],
-              box_index=box_idx,
-              targets=targets))
-
+    predicates.extend(
+        predicates_module.MoveBoxToRandomTarget(
+            walker=walker,
+            box=boxes[box_idx],
+            box_index=box_idx,
+            targets=targets,
+        ) for box_idx in range(len(boxes)))
   task = PredicateTask(
       walker=walker,
       maze_arena=arena,
@@ -88,9 +85,7 @@ def _make_predicate_task(n_boxes, n_targets,
       regenerate_predicates=False,
       physics_timestep=0.005,
       control_timestep=control_timestep)
-  env = composer.Environment(task=task, time_limit=time_limit)
-
-  return env
+  return composer.Environment(task=task, time_limit=time_limit)
 
 
 def go_to_k_targets(n_targets=3,

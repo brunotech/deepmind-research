@@ -54,8 +54,8 @@ class Noise:
 
   @classmethod
   def use_zero_noise(cls):
-    no_noise_mean = dict()
-    no_noise_std = dict()
+    no_noise_mean = {}
+    no_noise_std = {}
     for name, num in tcv_common.TCV_MEASUREMENTS.items():
       no_noise_mean[name] = np.zeros((num,))
       no_noise_std[name] = np.zeros((num,))
@@ -75,9 +75,10 @@ class Noise:
     action_noise_mean = np.zeros((tcv_common.NUM_ACTIONS))
     action_noise_std = np.zeros((tcv_common.NUM_ACTIONS))
 
-    meas_noise_mean = dict()
-    for key, l in tcv_common.TCV_MEASUREMENTS.items():
-      meas_noise_mean[key] = np.zeros((l,))
+    meas_noise_mean = {
+        key: np.zeros((l, ))
+        for key, l in tcv_common.TCV_MEASUREMENTS.items()
+    }
     meas_noise_std = dict(
         clint_vloop=np.array([0]),
         clint_rvloop=np.array([scale * 1e-4] * 37),

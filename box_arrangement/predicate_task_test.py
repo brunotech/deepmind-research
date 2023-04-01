@@ -44,14 +44,12 @@ class PredicateTaskTest(absltest.TestCase):
     text_maze = arenas.padded_room.PaddedRoom(
         room_size=8, num_objects=2, pad_with_walls=True)
     maze_arena = arenas.MazeWithTargets(maze=text_maze)
-    targets = []
-    for _ in range(num_targets):
-      targets.append(
-          props.PositionDetector(
-              pos=[0, 0, 0.5],
-              size=[0.5, 0.5, 0.5],
-              inverted=False,
-              visible=True))
+    targets = [
+        props.PositionDetector(pos=[0, 0, 0.5],
+                               size=[0.5, 0.5, 0.5],
+                               inverted=False,
+                               visible=True) for _ in range(num_targets)
+    ]
     test_predicates = [predicates.MoveWalkerToRandomTarget(walker, targets)]
     self._task = predicate_task.PredicateTask(
         walker=walker,
@@ -140,14 +138,12 @@ class PredicateTaskTest(absltest.TestCase):
     text_maze = arenas.padded_room.PaddedRoom(
         room_size=8, num_objects=2, pad_with_walls=True)
     maze_arena = arenas.MazeWithTargets(maze=text_maze)
-    targets = []
-    for _ in range(num_targets):
-      targets.append(
-          props.PositionDetector(
-              pos=[0, 0, 0.5],
-              size=[0.5, 0.5, 0.5],
-              inverted=False,
-              visible=True))
+    targets = [
+        props.PositionDetector(pos=[0, 0, 0.5],
+                               size=[0.5, 0.5, 0.5],
+                               inverted=False,
+                               visible=True) for _ in range(num_targets)
+    ]
     test_predicates = []
     with self.assertRaisesWithLiteralMatch(
         ValueError, "Not enough predicates for task."
@@ -170,14 +166,12 @@ class PredicateTaskTest(absltest.TestCase):
     text_maze = arenas.padded_room.PaddedRoom(
         room_size=8, num_objects=2, pad_with_walls=True)
     maze_arena = arenas.MazeWithTargets(maze=text_maze)
-    targets = []
-    for _ in range(num_targets):
-      targets.append(
-          props.PositionDetector(
-              pos=[0, 0, 0.5],
-              size=[0.5, 0.5, 0.5],
-              inverted=False,
-              visible=True))
+    targets = [
+        props.PositionDetector(pos=[0, 0, 0.5],
+                               size=[0.5, 0.5, 0.5],
+                               inverted=False,
+                               visible=True) for _ in range(num_targets)
+    ]
     test_predicates = [predicates.MoveWalkerToRandomTarget(walker, targets)]
     task = predicate_task.PredicateTask(
         walker=walker,
@@ -203,14 +197,12 @@ class PredicateTaskTest(absltest.TestCase):
     text_maze = arenas.padded_room.PaddedRoom(
         room_size=8, num_objects=6, pad_with_walls=True)
     maze_arena = arenas.MazeWithTargets(maze=text_maze)
-    targets = []
-    for _ in range(num_targets):
-      targets.append(
-          props.PositionDetector(
-              pos=[0, 0, 0.5],
-              size=[0.5, 0.5, 0.5],
-              inverted=False,
-              visible=True))
+    targets = [
+        props.PositionDetector(pos=[0, 0, 0.5],
+                               size=[0.5, 0.5, 0.5],
+                               inverted=False,
+                               visible=True) for _ in range(num_targets)
+    ]
     # Moving the walker to two targets is not possible since the walker is a
     # shared object in use.
     test_predicates = [predicates.MoveWalkerToTarget(walker, targets[0]),
@@ -238,14 +230,12 @@ class PredicateTaskTest(absltest.TestCase):
     text_maze = arenas.padded_room.PaddedRoom(
         room_size=8, num_objects=6, pad_with_walls=True)
     maze_arena = arenas.MazeWithTargets(maze=text_maze)
-    targets = []
-    for _ in range(num_targets):
-      targets.append(
-          props.PositionDetector(
-              pos=[0, 0, 0.5],
-              size=[0.5, 0.5, 0.5],
-              inverted=False,
-              visible=True))
+    targets = [
+        props.PositionDetector(pos=[0, 0, 0.5],
+                               size=[0.5, 0.5, 0.5],
+                               inverted=False,
+                               visible=True) for _ in range(num_targets)
+    ]
     test_predicates = [predicates.MoveWalkerToTarget(walker, targets[0]),
                        predicates.MoveWalkerToTarget(walker, targets[1])]
     task = predicate_task.PredicateTask(

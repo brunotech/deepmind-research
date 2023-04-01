@@ -86,7 +86,7 @@ def _evaluate_nu_slow(mol: mole.Mole,
   nu = []
   # Use the Gaussian nuclear model in int1e_rinv_sph to evaluate the screened
   # integrals.
-  with mol.with_rinv_zeta(zeta=omega * omega):
+  with mol.with_rinv_zeta(zeta=omega**2):
     # This is going to be slow...
     for coord in coords:
       with mol.with_rinv_origin(coord):
